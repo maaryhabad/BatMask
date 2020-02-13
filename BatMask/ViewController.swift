@@ -37,7 +37,7 @@ class ViewController: UIViewController {
     
     private var scaling: CGFloat = 1
     
-    private var isCollecionOpened = false {
+    private var isCollectionOpened = false {
         didSet {
             updateCollectionPosition()
         }
@@ -52,10 +52,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         guard ARFaceTrackingConfiguration.isSupported else {
-            alertLabel.text = "Face tracking is not supported on this device"
+            alertLabel.text = "Face tracking não está disponível nesse dispositivo."
             
             return
         }
+        
+        calibrationTransparentView.backgroundColor = UIColor(patternImage: UIImage(named: "Fundo.png")!)
+        calibrationView.layer.cornerRadius = 10
         
         sceneView.delegate = self
         
@@ -131,9 +134,10 @@ class ViewController: UIViewController {
     }
     
     private func updateCollectionPosition() {
-        collectionBottomConstraint.constant = isCollecionOpened ? 0 : -masksView.bounds.size.height
+        collectionBottomConstraint.constant = isCollectionOpened ? 0 : -masksView.bounds.size.height
         UIView.animate(withDuration: animationDuration) {
-            self.calibrationButton.alpha = self.isCollecionOpened ? 0 : 1
+            self.calibrationButton.alpha = self.isCollectionOpened ? 0 : 1
+            self.collectionButton.alpha = self.isCalibrationOpened ? 0 : 1
             self.view.layoutIfNeeded()
         }
     }
@@ -142,6 +146,7 @@ class ViewController: UIViewController {
         calibrationBottomConstraint.constant = isCalibrationOpened ? 0 : -calibrationView.bounds.size.height
         UIView.animate(withDuration: animationDuration) {
             self.collectionButton.alpha = self.isCalibrationOpened ? 0 : 1
+            self.calibrationButton.alpha = self.isCollectionOpened ? 0 : 1
             self.view.layoutIfNeeded()
         }
     }
@@ -154,7 +159,7 @@ class ViewController: UIViewController {
     // MARK: - Actions
     
     @IBAction func collectionDidTap(_ sender: UIButton) {
-        isCollecionOpened = !isCollecionOpened
+        isCollectionOpened = !isCollectionOpened
     }
     
     @IBAction func calibrationDidTap(_ sender: UIButton) {
@@ -162,7 +167,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func sceneViewDidTap(_ sender: UITapGestureRecognizer) {
-        isCollecionOpened = false
+        isCollectionOpened = false
         isCalibrationOpened = false
     }
     
